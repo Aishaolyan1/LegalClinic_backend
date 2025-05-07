@@ -76,11 +76,11 @@ class UserAuthTests(APITestCase):
         self.assertIn('user', response.data)
 
     def test_protected_endpoint_requires_authentication(self):
-        protected_url = '/some/protected/url/'  # عدّل هذا إلى endpoint محمي فعلياً
+        protected_url = '/some/protected/url/'  
         response = self.client.get(protected_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         refresh = RefreshToken.for_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
         response = self.client.get(protected_url)
-        # self.assertEqual(response.status_code, status.HTTP_200_OK) ← عدّل حسب الاستجابة المتوقعة
+        # self.assertEqual(response.status_code, status.HTTP_200_OK) 
