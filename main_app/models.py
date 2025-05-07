@@ -1,13 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Profile(models.Model):
+    GENDER = [
+        ('m', 'male'),
+        ('f', 'female'),
+    ]
+    CITIES = [
+        ('j', 'Jedda'),
+        ('r', 'Riyadh'),
+        ('m', 'Macca'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_lawyer = models.BooleanField(default=False)
+    gender = models.CharField(max_length=1, choices=GENDER, default=GENDER[0][0])
+    city = models.CharField(max_length=1, choices=CITIES, default=CITIES[0][0])
 
     def __str__(self):
-        role = "Lawyer" if self.is_lawyer else "Client" if self.is_client else "User"
-        return f"{self.user.username} ({role})"
+        return self.city
 
 
 class Case(models.Model):
