@@ -38,6 +38,7 @@ class CreateUserView(generics.CreateAPIView):
       return Response({ 'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
+  permissions_classes = [permissions.AllowAny]
 
   def post(self, request):
     try:
@@ -61,7 +62,9 @@ class VerifyUserView(APIView):
       user = User.objects.get(username=request.user.username)
       try:
         refresh = RefreshToken.for_user(user)
-        return Response({'refresh': str(refresh),'access': str(refresh.access_token),'user': UserSerializer(user).data}, status=status.HTTP_200_OK)
+        profile = Profile.objects.get(user=user)
+        content = {'refresh': str(refresh), 'access': str(refresh.access_token),'user': UserSerializer(user).data, "profile": ProfileSerializer(profile).data}
+        return Response(content, status=status.HTTP_200_OK)
       except Exception as token_error:
         return Response({"detail": "Failed to generate token.", "error": str(token_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as err:
